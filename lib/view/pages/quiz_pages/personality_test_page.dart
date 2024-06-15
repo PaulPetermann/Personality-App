@@ -18,25 +18,30 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
 
   final List<Question> _questionsList = [
     Question(
-        question: "I enjoy social gatherings.", answerType: AnswerType.yesNo),
+        question: "I enjoy social gatherings.",
+        answerType: AnswerType.yesNo,
+        options: ["Yes", "No"]),
     Question(
         question: "I prefer detailed planning over spontaneity.",
-        answerType: AnswerType.yesNo),
+        answerType: AnswerType.yesNo,
+        options: ["Yes", "No"]),
     Question(
         question: 'I often think about the meaning of life.',
-        answerType: AnswerType.yesNo),
+        answerType: AnswerType.yesNo,
+        options: ["1", "2", "3", "4"]),
     Question(
         question: "How Important is the Family to you!",
-        answerType: AnswerType.yesNo)
+        answerType: AnswerType.yesNo,
+        options: ["Yes", "No"])
   ];
 
-  late List<bool?> _answers = List<bool?>.filled(3, null);
+  late List<String?> _answers = List<String?>.filled(3, null);
   double _progressValue = 0.0;
 
   void updateProgress() {
     setState(() {
       int i = 0;
-      for (bool? ans in _answers) {
+      for (String? ans in _answers) {
         if (ans != null) {
           i++;
         }
@@ -68,30 +73,23 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Row(
-                        children: [
-                          Radio(
-                            value: true,
-                            groupValue: _answers[index],
-                            onChanged: (value) {
-                              setState(() {
-                                _answers[index] = value;
-                                updateProgress();
-                              });
-                            },
-                          ),
-                          Text('Yes'),
-                          Radio(
-                            value: false,
-                            groupValue: _answers[index],
-                            onChanged: (value) {
-                              setState(() {
-                                _answers[index] = value;
-                                updateProgress();
-                              });
-                            },
-                          ),
-                          Text('No'),
-                        ],
+                        children: _questionsList[index].options.map((option) {
+                          return Row(
+                            children: [
+                              Radio(
+                                value: option,
+                                groupValue: _answers[index],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _answers[index] = value;
+                                    updateProgress();
+                                  });
+                                },
+                              ),
+                              Text(option),
+                            ],
+                          );
+                        }).toList(),
                       ),
                       SizedBox(height: 20),
                     ],
