@@ -37,6 +37,19 @@ class SettingsPageState extends State<SettingsPage> {
                 });
               },
             ),
+            Text(
+              settings.get("timerOn") ? 'Timer On' : 'Timer Off',
+              style: const TextStyle(fontSize: 18.0),
+            ),
+            Switch(
+              value: settings.get("timerOn"),
+              onChanged: (value) {
+                setState(() {
+                  bool current = settings.get("timerOn");
+                  settings.put("timerOn", !current);
+                });
+              },
+            )
           ],
         ),
       ),

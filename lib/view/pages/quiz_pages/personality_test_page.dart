@@ -10,12 +10,6 @@ class PersonalityTestPage extends StatefulWidget {
 }
 
 class _PersonalityTestPageState extends State<PersonalityTestPage> {
-  final _questions = [
-    'I enjoy social gatherings.',
-    'I prefer detailed planning over spontaneity.',
-    'I often think about the meaning of life.',
-  ];
-
   final List<Question> _questionsList = [
     Question(
         question: "I enjoy social gatherings.",
@@ -35,7 +29,8 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
         options: ["Yes", "No"])
   ];
 
-  late List<String?> _answers = List<String?>.filled(3, null);
+  List<String?> _answers =
+      List<String?>.filled(4, null); //TODO automatic length
   double _progressValue = 0.0;
 
   void updateProgress() {
@@ -46,7 +41,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
           i++;
         }
       }
-      _progressValue = i / _questions.length;
+      _progressValue = i / _questionsList.length;
     });
   }
 
@@ -62,13 +57,13 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: _questions.length,
+                itemCount: _questionsList.length,
                 itemBuilder: (context, index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _questions[index],
+                        _questionsList[index].question,
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),

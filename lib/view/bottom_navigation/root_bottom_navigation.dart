@@ -25,15 +25,8 @@ class _RootBottomNavigationState extends State<RootBottomNavigation> {
     ];
   }
 
-  void checkSettings() {
-    if (settings.get("isDarkmode") == null) {
-      settings.put("isDarkmode", false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    checkSettings();
     return ValueListenableBuilder(
       valueListenable: settings.listenable(),
       builder: (context, box, widget) {
