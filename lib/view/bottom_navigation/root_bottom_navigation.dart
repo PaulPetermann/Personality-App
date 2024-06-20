@@ -14,9 +14,9 @@ class RootBottomNavigation extends StatefulWidget {
 
 class _RootBottomNavigationState extends State<RootBottomNavigation> {
   int _currentIndex = 0;
-  //Settings setting = Settings();
   late final List<Widget> _children;
   final Box settings = Hive.box("settings");
+
   _RootBottomNavigationState() {
     _children = [
       PersonalityTestPage(),
@@ -35,7 +35,10 @@ class _RootBottomNavigationState extends State<RootBottomNavigation> {
           themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
           darkTheme: ThemeData.dark(),
           home: Scaffold(
-            body: _children[_currentIndex],
+            body: IndexedStack(
+              index: _currentIndex,
+              children: _children,
+            ),
             bottomNavigationBar: BottomNavigationBar(
               selectedItemColor: Colors.green,
               currentIndex: _currentIndex,

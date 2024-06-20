@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
 import 'package:personality_app/model/answer_model.dart';
-import 'package:personality_app/model/question_model.dart';
+import 'package:personality_app/model/question.dart';
 
 class PersonalityTestPage extends StatefulWidget {
   @override
@@ -10,28 +13,31 @@ class PersonalityTestPage extends StatefulWidget {
 }
 
 class _PersonalityTestPageState extends State<PersonalityTestPage> {
-  final List<Question> _questionsList = [
-    Question(
-        question: "I enjoy social gatherings.",
-        answerType: AnswerType.yesNo,
-        options: ["Yes", "No"]),
-    Question(
-        question: "I prefer detailed planning over spontaneity.",
-        answerType: AnswerType.yesNo,
-        options: ["Yes", "No"]),
-    Question(
-        question: 'I often think about the meaning of life.',
-        answerType: AnswerType.yesNo,
-        options: ["1", "2", "3", "4"]),
-    Question(
-        question: "How Important is the Family to you!",
-        answerType: AnswerType.yesNo,
-        options: ["Yes", "No"])
-  ];
-
-  List<String?> _answers =
-      List<String?>.filled(4, null); //TODO automatic length
   double _progressValue = 0.0;
+  final Box<Question> _questionsBox = Hive.box<Question>('questions');
+  final Box _settings = Hive.box("settings");
+  late List<Question> _questionsList = _questionsBox.values.toList();
+  late List<String?> _answers =
+      List<String?>.filled(_questionsList.length, null);
+
+  late Timer _timer;
+  int _elapsedSeconds = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _elapsedSeconds++;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   void updateProgress() {
     setState(() {
@@ -47,6 +53,8 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
 
   @override
   Widget build(BuildContext context) {
+    String formattedTime = _formatTime(_elapsedSeconds);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Persönlichkeitstest'),
@@ -55,6 +63,19 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Visibility(
+              visible: _settings.get("timerOn"),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Text(
+                  'Time: $formattedTime',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: _questionsList.length,
@@ -99,17 +120,28 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
                 child: Text('Submit'),
               ),
             ),
+            SizedBox(height: 10),
             LinearProgressIndicator(
               value: _progressValue,
               backgroundColor: Colors.grey,
               valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
             ),
+            SizedBox(height: 10),
           ],
         ),
       ),
     );
   }
 
+  String _formatTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+    String minutesStr = (minutes % 60).toString().padLeft(2, '0');
+    String secondsStr = remainingSeconds.toString().padLeft(2, '0');
+    return '$minutesStr:$secondsStr';
+  }
+
+  //TODO:
   void _submitAnswers() {
     // For now, just print the answers
     print('User answers: $_answers');

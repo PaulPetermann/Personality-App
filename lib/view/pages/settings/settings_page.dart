@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:personality_app/model/settings_model.dart';
 import 'package:hive/hive.dart';
 
 /// The Settings screen
