@@ -4,16 +4,20 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
-import 'package:personality_app/model/answer_model.dart';
+import 'package:personality_app/model/history_model.dart';
 import 'package:personality_app/model/question.dart';
+import 'package:personality_app/model/create_quiz.dart';
 
 class PersonalityTestPage extends StatefulWidget {
+  // const PersonalityTestPage({super.key, required this.selected});
+  // final int selected;
   @override
   _PersonalityTestPageState createState() => _PersonalityTestPageState();
 }
 
 class _PersonalityTestPageState extends State<PersonalityTestPage> {
   double _progressValue = 0.0;
+  final findname = TextEditingController();                             // controller for the name input
   final Box<Question> _questionsBox = Hive.box<Question>('questions');
   final Box _settings = Hive.box("settings");
   late List<Question> _questionsList = _questionsBox.values.toList();
@@ -83,6 +87,12 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (index == 0)
+                      TextField(
+                        controller: findname,
+                        decoration: InputDecoration(hintText: "Enter Name"),   // enter name at the very start of quizz
+                      ),
+                      if (index ==0) SizedBox(height: 40),
                       Text(
                         _questionsList[index].question,
                         style: TextStyle(
@@ -142,9 +152,33 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
   }
 
   //TODO:
-  void _submitAnswers() {
-    // For now, just print the answers
-    print('User answers: $_answers');
+  void _submitAnswers() async{
+
+    DateTime now = DateTime.now();
+    String date = now.toString();
+    String outcome = "On the "+ date + ',\n' + findname.text;
+    outcome = outcome + " took the " + Allquiz().quizzes["quizzes"][0]["name"] + " test and got the following result:\n";
+    int i = 0;
+    num score = 0;
+
+    for (var question in Allquiz().quizzes["quizzes"][0]["questions"]){
+      for (var option in question["choices"]){
+        if (_answers[i] == option["answer"]){
+          score = score + option["points"];
+        }
+      }
+      i++;
+    }
+
+  for (var result in Allquiz().quizzes["quizzes"][0]["results"]){
+    if (score <= result["maxpoints"]){
+      outcome = outcome + result["text"];
+    }
+  }
+
+  Box submit = await Hive.openBox<History>("history");
+  submit.add(History(findname.text,outcome));
+
     // Add your logic to process the answers and navigate to results page
   }
 }
