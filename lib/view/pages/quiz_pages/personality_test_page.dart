@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
-
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:personality_app/model/history_model.dart';
 import 'package:personality_app/model/question.dart';
 import 'package:personality_app/model/create_quiz.dart';
+import 'package:personality_app/model/endquiz_handler.dart';
 
 class PersonalityTestPage extends StatefulWidget {
   const PersonalityTestPage({super.key, required this.selected});
@@ -58,6 +59,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
 
   @override
   Widget build(BuildContext context) {
+    var endstate = context.watch<Finisher>();
     String formattedTime = _formatTime(_elapsedSeconds);
 
     return Scaffold(
@@ -127,7 +129,11 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
             Visibility(
               visible: _progressValue == 1.0,
               child: ElevatedButton(
-                onPressed: _submitAnswers,
+                onPressed: (){
+                  String results = _computeResults();
+                  _submitAnswers(results);
+                  endstate.finish(results);
+                },
                 child: Text('Submit'),
               ),
             ),
@@ -152,11 +158,16 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
     return '$minutesStr:$secondsStr';
   }
 
-  //TODO:
-  void _submitAnswers() async{
+  void _submitAnswers(String outcome) async{
 
+  //Box submit = await Hive.openBox<History>("history");
+  submit.add(History(findname.text,outcome));
+  
+  }
+
+  String _computeResults(){
     DateTime now = DateTime.now();
-    String date = now.toString();
+    String date = now.day.toString() + "." +now.month.toString() +"." + now.year.toString();
     String outcome = "On the "+ date + ',\n' + findname.text;
     outcome = "${"$outcome took the " + Allquiz().quizzes["quizzes"][0]["name"]} test and got the following result:\n";
     int i = 0;
@@ -174,6 +185,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
   for (var result in Allquiz().quizzes["quizzes"][0]["results"]){
     if (score <= result["maxpoints"]){
       outcome = outcome + result["text"];
+      break;
     }
   }
   
@@ -182,11 +194,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
     timr = "on.";
   }
   outcome = "$outcome\nwith a time of ${_formatTime(_elapsedSeconds)}" + ", the timer was " + timr;
-  
 
-  //Box submit = await Hive.openBox<History>("history");
-  submit.add(History(findname.text,outcome));
-
-    // Add your logic to process the answers and navigate to results page
+  return outcome;
   }
 }

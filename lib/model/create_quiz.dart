@@ -12,11 +12,11 @@ class Allquiz{
                       "choices":[
                           {
                               "answer": "Yes",
-                              "points": 5
+                              "points": 10
                           },
                           {
                               "answer": "No",
-                              "points":10
+                              "points":5
                           }
                       ]
                   },
@@ -25,11 +25,11 @@ class Allquiz{
                       "choices":[
                           {
                               "answer": "Yes",
-                              "points": 5
+                              "points": 10
                           },
                           {
                               "answer": "No",
-                              "points":10
+                              "points":5
                           }
                       ]
                   },
@@ -59,26 +59,26 @@ class Allquiz{
                       "choices":[
                           {
                               "answer": "Yes",
-                              "points": 5
+                              "points": 10
                           },
                           {
                               "answer": "No",
-                              "points":10
+                              "points":5
                           }
                       ]
                   }
               ],
               "results":[
                   {
-                      "maxpoints": 5,
+                      "maxpoints": 20,
                       "text": "you are an introvert"
                   },
                   {
-                      "maxpoints": 10,
+                      "maxpoints": 30,
                       "text": "you are an ambivert"
                   },
                   {
-                      "maxpoints": 15,
+                      "maxpoints": 40,
                       "text": "you are an extrovert"
                   }
               ]

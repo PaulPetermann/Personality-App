@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:personality_app/view/pages/quiz_pages/personality_test_page.dart';
+import 'package:personality_app/view/pages/quiz_pages/finish_page.dart';
 import 'package:personality_app/model/create_quiz.dart';
+import 'package:personality_app/model/endquiz_handler.dart';
+import 'package:provider/provider.dart';
 
 class QuizSelecterPage extends StatefulWidget{
 
@@ -13,6 +16,10 @@ class _QuizSelecterPageState extends State<QuizSelecterPage>{
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider<Finisher>(
+      create: (_) => Finisher(),
+      builder: (context, child) {
+    var appState = context.watch<Finisher>();
 
     if (_selected == -1){
       return Center(
@@ -32,7 +39,24 @@ class _QuizSelecterPageState extends State<QuizSelecterPage>{
         ),
       );
     }else{
-      return PersonalityTestPage(selected: _selected,);
+      if (!appState.isfinished){
+        return PersonalityTestPage(selected: _selected,);
+      }else{
+        return ListView(
+          children:[
+            ReviewPage(result:appState.results),
+            ElevatedButton(
+              onPressed: (){
+                appState.isfinished = false;
+                setState(() {
+                  _selected = -1;
+                });
+              },
+              child: Text("Finish review"))
+          ]
+        );
+      }
     }
+  });
   }
 }
