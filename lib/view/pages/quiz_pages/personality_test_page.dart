@@ -9,8 +9,8 @@ import 'package:personality_app/model/question.dart';
 import 'package:personality_app/model/create_quiz.dart';
 
 class PersonalityTestPage extends StatefulWidget {
-  // const PersonalityTestPage({super.key, required this.selected});
-  // final int selected;
+  const PersonalityTestPage({super.key, required this.selected});
+  final int selected;
   @override
   _PersonalityTestPageState createState() => _PersonalityTestPageState();
 }
@@ -19,6 +19,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
   double _progressValue = 0.0;
   final findname = TextEditingController();                             // controller for the name input
   final Box<Question> _questionsBox = Hive.box<Question>('questions');
+  final Box<History> submit = Hive.box<History>('history');
   final Box _settings = Hive.box("settings");
   late List<Question> _questionsList = _questionsBox.values.toList();
   late List<String?> _answers =
@@ -157,7 +158,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
     DateTime now = DateTime.now();
     String date = now.toString();
     String outcome = "On the "+ date + ',\n' + findname.text;
-    outcome = outcome + " took the " + Allquiz().quizzes["quizzes"][0]["name"] + " test and got the following result:\n";
+    outcome = "${"$outcome took the " + Allquiz().quizzes["quizzes"][0]["name"]} test and got the following result:\n";
     int i = 0;
     num score = 0;
 
@@ -175,8 +176,15 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
       outcome = outcome + result["text"];
     }
   }
+  
+  String timr = "off.";
+  if (_settings.get("timerOn")){
+    timr = "on.";
+  }
+  outcome = "$outcome\nwith a time of ${_formatTime(_elapsedSeconds)}" + ", the timer was " + timr;
+  
 
-  Box submit = await Hive.openBox<History>("history");
+  //Box submit = await Hive.openBox<History>("history");
   submit.add(History(findname.text,outcome));
 
     // Add your logic to process the answers and navigate to results page

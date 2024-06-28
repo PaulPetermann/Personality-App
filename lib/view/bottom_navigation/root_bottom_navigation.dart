@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:personality_app/model/history_model.dart';
 import 'package:personality_app/view/pages/history/history_page.dart';
-import 'package:personality_app/view/pages/quiz_pages/personality_test_page.dart';
+import 'package:personality_app/view/pages/quiz_pages/quizselect_page.dart';
 import 'package:personality_app/view/pages/settings/settings_page.dart';
 
 class RootBottomNavigation extends StatefulWidget {
@@ -19,7 +19,7 @@ class _RootBottomNavigationState extends State<RootBottomNavigation> {
 
   _RootBottomNavigationState() {
     _children = [
-      PersonalityTestPage(),
+      QuizSelecterPage(),
       HistoryPage(),
       SettingsPage(),
     ];

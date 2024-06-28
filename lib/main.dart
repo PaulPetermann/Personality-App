@@ -16,6 +16,7 @@ void main() async {
   await Hive.initFlutter(appDocumentDir.path);
 
   Hive.registerAdapter(QuestionAdapter());
+  Hive.registerAdapter(HistoryAdapter());
 
   final Box settings = await Hive.openBox("settings");
   await Hive.openBox<History>("history");
