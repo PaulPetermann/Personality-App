@@ -8,6 +8,7 @@ import 'package:personality_app/model/history_model.dart';
 import 'package:personality_app/model/question.dart';
 import 'package:personality_app/view/bottom_navigation/root_bottom_navigation.dart';
 import 'package:personality_app/view/splash_page.dart';
+import 'package:personality_app/model/create_quiz.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,7 @@ void main() async {
   await Hive.initFlutter(appDocumentDir.path);
 
   Hive.registerAdapter(QuestionAdapter());
+  Hive.registerAdapter(HistoryAdapter());
 
   final Box settings = await Hive.openBox("settings");
   await Hive.openBox<History>("history");
@@ -29,17 +31,27 @@ void main() async {
   }
 
   if (quizDb.isEmpty) {
-    quizDb.add(Question(
-        question: "I enjoy social gatherings.", options: ["Yes", "No"]));
-    quizDb.add(Question(
-        question: "I prefer detailed planning over spontaneity.",
-        options: ["Yes", "No"]));
-    quizDb.add(Question(
-        question: 'I often think about the meaning of life.',
-        options: ["1", "2", "3", "4"]));
-    quizDb.add(Question(
-        question: "How Important is the Family to you!",
-        options: ["Yes", "No"]));
+    for (var question in Allquiz().quizzes["quizzes"][0]["questions"]){
+      List<String> choicelist = [];
+      for (var answer in question["choices"]){
+        choicelist.add(answer["answer"]);
+      }
+      quizDb.add(Question(
+        question: question["title"],
+        options: choicelist,
+        ));
+    }
+    // quizDb.add(Question(
+    //     question: "I enjoy social gatherings.", options: ["Yes", "No"]));
+    // quizDb.add(Question(
+    //     question: "I prefer detailed planning over spontaneity.",
+    //     options: ["Yes", "No"]));
+    // quizDb.add(Question(
+    //     question: 'I often think about the meaning of life.',
+    //     options: ["1", "2", "3", "4"]));
+    // quizDb.add(Question(
+    //     question: "How Important is the Family to you!",
+    //     options: ["Yes", "No"]));
   }
 
   bool? mode = settings.get("isDarkMode");
