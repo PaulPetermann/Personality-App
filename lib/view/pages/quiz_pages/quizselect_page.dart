@@ -23,9 +23,10 @@ class _QuizSelecterPageState extends State<QuizSelecterPage>{
 
     if (_selected == -1){
       return Center(
-        child: Column(
+        child: ListView(
           children: [
             SizedBox(height: 40,),
+            Text("Available tests:",style: TextStyle(fontSize: 22),),
             for(int i =0; i < Allquiz().quizzes["quizzes"].length; i++)
               ElevatedButton(
                 onPressed: (){

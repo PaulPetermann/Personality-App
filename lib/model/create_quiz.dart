@@ -21,15 +21,32 @@ class Allquiz{
                       ]
                   },
                   {
-                      "title": "I prefer detailed planning over spontaneity.",
+                      "title": "do you go outside often?",
                       "choices":[
                           {
                               "answer": "Yes",
                               "points": 10
                           },
                           {
-                              "answer": "No",
+                              "answer": "No, only when I have to",
                               "points":5
+                          },
+                          {
+                              "answer": "sometimes",
+                              "points":7
+                          }
+                      ]
+                  },
+                  {
+                      "title": "I prefer detailed planning over spontaneity.",
+                      "choices":[
+                          {
+                              "answer": "Yes",
+                              "points": 5
+                          },
+                          {
+                              "answer": "No",
+                              "points":10
                           }
                       ]
                   },
@@ -38,19 +55,19 @@ class Allquiz{
                       "choices":[
                           {
                               "answer": "1",
-                              "points": 5
+                              "points": 10
                           },
                           {
                               "answer": "2",
-                              "points": 7
-                          },
-                          {
-                              "answer": "3",
                               "points": 8
                           },
                           {
+                              "answer": "3",
+                              "points": 7
+                          },
+                          {
                               "answer": "4",
-                              "points":10
+                              "points":5
                           }
                       ]
                   },
@@ -59,26 +76,26 @@ class Allquiz{
                       "choices":[
                           {
                               "answer": "Yes",
-                              "points": 10
+                              "points": 5
                           },
                           {
                               "answer": "No",
-                              "points":5
+                              "points":10
                           }
                       ]
                   }
               ],
               "results":[
                   {
-                      "maxpoints": 20,
+                      "maxpoints": 25,
                       "text": "you are an introvert"
                   },
                   {
-                      "maxpoints": 30,
+                      "maxpoints": 33,
                       "text": "you are an ambivert"
                   },
                   {
-                      "maxpoints": 40,
+                      "maxpoints": 50,
                       "text": "you are an extrovert"
                   }
               ]

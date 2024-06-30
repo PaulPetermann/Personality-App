@@ -13,18 +13,20 @@ class PersonalityTestPage extends StatefulWidget {
   const PersonalityTestPage({super.key, required this.selected});
   final int selected;
   @override
-  _PersonalityTestPageState createState() => _PersonalityTestPageState();
+  _PersonalityTestPageState createState() => _PersonalityTestPageState(selected:selected);
 }
 
 class _PersonalityTestPageState extends State<PersonalityTestPage> {
+  _PersonalityTestPageState({required this.selected});
+  int selected;
   double _progressValue = 0.0;
-  final findname = TextEditingController();                             // controller for the name input
+  final findname = TextEditingController();                         // controller for the name input
   final Box<Question> _questionsBox = Hive.box<Question>('questions');
   final Box<History> submit = Hive.box<History>('history');
   final Box _settings = Hive.box("settings");
   late List<Question> _questionsList = _questionsBox.values.toList();
   late List<String?> _answers =
-      List<String?>.filled(_questionsList.length, null);
+      List<String?>.filled(Allquiz().quizzes["quizzes"][selected]["questions"].length, null);
 
   late Timer _timer;
   int _elapsedSeconds = 0;
@@ -53,12 +55,22 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
           i++;
         }
       }
-      _progressValue = i / _questionsList.length;
+      _progressValue = i / Allquiz().quizzes["quizzes"][selected]["questions"].length;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final current = Allquiz().quizzes["quizzes"][widget.selected];
+    List<List> options = [];
+    for (var question in current["questions"]){
+      List<String> ops =[];
+      for (var option in question["choices"]){
+        ops.add(option["answer"]);
+      }
+      options.add(ops);
+    }
+
     var endstate = context.watch<Finisher>();
     String formattedTime = _formatTime(_elapsedSeconds);
 
@@ -85,7 +97,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: _questionsList.length,
+                itemCount: current["questions"].length,
                 itemBuilder: (context, index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,12 +109,12 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
                       ),
                       if (index ==0) SizedBox(height: 40),
                       Text(
-                        _questionsList[index].question,
+                        Allquiz().quizzes["quizzes"][widget.selected]["questions"][index]["title"],
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Row(
-                        children: _questionsList[index].options.map((option) {
+                        children: options[index].map((option) {
                           return Row(
                             children: [
                               Radio(
@@ -169,11 +181,11 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
     DateTime now = DateTime.now();
     String date = now.day.toString() + "." +now.month.toString() +"." + now.year.toString();
     String outcome = "On the "+ date + ',\n' + findname.text;
-    outcome = "${"$outcome took the " + Allquiz().quizzes["quizzes"][0]["name"]} test and got the following result:\n";
+    outcome = "${"$outcome took the " + Allquiz().quizzes["quizzes"][widget.selected]["name"]} test and got the following result:\n";
     int i = 0;
     num score = 0;
 
-    for (var question in Allquiz().quizzes["quizzes"][0]["questions"]){
+    for (var question in Allquiz().quizzes["quizzes"][widget.selected]["questions"]){
       for (var option in question["choices"]){
         if (_answers[i] == option["answer"]){
           score = score + option["points"];
@@ -182,7 +194,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
       i++;
     }
 
-  for (var result in Allquiz().quizzes["quizzes"][0]["results"]){
+  for (var result in Allquiz().quizzes["quizzes"][widget.selected]["results"]){
     if (score <= result["maxpoints"]){
       outcome = outcome + result["text"];
       break;
