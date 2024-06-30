@@ -113,24 +113,27 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      Row(
-                        children: options[index].map((option) {
-                          return Row(
-                            children: [
-                              Radio(
-                                value: option,
-                                groupValue: _answers[index],
-                                onChanged: (value) {
-                                  setState(() {
-                                    _answers[index] = value;
-                                    updateProgress();
-                                  });
-                                },
-                              ),
-                              Text(option),
-                            ],
-                          );
-                        }).toList(),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child:Row(
+                          children: options[index].map((option) {
+                            return Row(
+                              children: [
+                                Radio(
+                                  value: option,
+                                  groupValue: _answers[index],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _answers[index] = value;
+                                      updateProgress();
+                                    });
+                                  },
+                                ),
+                                Text(option),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       ),
                       SizedBox(height: 20),
                     ],
@@ -139,7 +142,7 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
               ),
             ),
             Visibility(
-              visible: _progressValue == 1.0,
+              visible: _progressValue == 1.0 && findname.text!="",
               child: ElevatedButton(
                 onPressed: (){
                   String results = _computeResults();
