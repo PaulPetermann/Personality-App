@@ -1,32 +1,34 @@
 import 'dart:async';
 import 'dart:collection';
+import 'package:personify/model/endquiz_handler.dart';
+import 'package:personify/model/history_model.dart';
+import 'package:personify/model/question.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
-import 'package:personality_app/model/history_model.dart';
-import 'package:personality_app/model/question.dart';
-import 'package:personality_app/model/create_quiz.dart';
-import 'package:personality_app/model/endquiz_handler.dart';
+
+import '../../../model/create_quiz.dart';
 
 class PersonalityTestPage extends StatefulWidget {
   const PersonalityTestPage({super.key, required this.selected});
   final int selected;
   @override
-  _PersonalityTestPageState createState() => _PersonalityTestPageState(selected:selected);
+  _PersonalityTestPageState createState() =>
+      _PersonalityTestPageState(selected: selected);
 }
 
 class _PersonalityTestPageState extends State<PersonalityTestPage> {
   _PersonalityTestPageState({required this.selected});
   int selected;
   double _progressValue = 0.0;
-  final findname = TextEditingController();                         // controller for the name input
+  final findname = TextEditingController(); // controller for the name input
   final Box<Question> _questionsBox = Hive.box<Question>('questions');
   final Box<History> submit = Hive.box<History>('history');
   final Box _settings = Hive.box("settings");
   late List<Question> _questionsList = _questionsBox.values.toList();
-  late List<String?> _answers =
-      List<String?>.filled(Allquiz().quizzes["quizzes"][selected]["questions"].length, null);
+  late List<String?> _answers = List<String?>.filled(
+      Allquiz().quizzes["quizzes"][selected]["questions"].length, null);
 
   late Timer _timer;
   int _elapsedSeconds = 0;
@@ -55,7 +57,8 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
           i++;
         }
       }
-      _progressValue = i / Allquiz().quizzes["quizzes"][selected]["questions"].length;
+      _progressValue =
+          i / Allquiz().quizzes["quizzes"][selected]["questions"].length;
     });
   }
 
@@ -63,9 +66,9 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
   Widget build(BuildContext context) {
     final current = Allquiz().quizzes["quizzes"][widget.selected];
     List<List> options = [];
-    for (var question in current["questions"]){
-      List<String> ops =[];
-      for (var option in question["choices"]){
+    for (var question in current["questions"]) {
+      List<String> ops = [];
+      for (var option in question["choices"]) {
         ops.add(option["answer"]);
       }
       options.add(ops);
@@ -103,19 +106,22 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (index == 0)
-                      TextField(
-                        controller: findname,
-                        decoration: InputDecoration(hintText: "Enter Name"),   // enter name at the very start of quizz
-                      ),
-                      if (index ==0) SizedBox(height: 40),
+                        TextField(
+                          controller: findname,
+                          decoration: InputDecoration(
+                              hintText:
+                                  "Enter Name"), // enter name at the very start of quizz
+                        ),
+                      if (index == 0) SizedBox(height: 40),
                       Text(
-                        Allquiz().quizzes["quizzes"][widget.selected]["questions"][index]["title"],
+                        Allquiz().quizzes["quizzes"][widget.selected]
+                            ["questions"][index]["title"],
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child:Row(
+                        child: Row(
                           children: options[index].map((option) {
                             return Row(
                               children: [
@@ -142,9 +148,9 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
               ),
             ),
             Visibility(
-              visible: _progressValue == 1.0 && findname.text!="",
+              visible: _progressValue == 1.0 && findname.text != "",
               child: ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   String results = _computeResults();
                   _submitAnswers(results);
                   endstate.finish(results);
@@ -173,43 +179,50 @@ class _PersonalityTestPageState extends State<PersonalityTestPage> {
     return '$minutesStr:$secondsStr';
   }
 
-  void _submitAnswers(String outcome) async{
-
-  //Box submit = await Hive.openBox<History>("history");
-  submit.add(History(findname.text,outcome));
-  
+  void _submitAnswers(String outcome) async {
+    //Box submit = await Hive.openBox<History>("history");
+    submit.add(History(findname.text, outcome));
   }
 
-  String _computeResults(){
+  String _computeResults() {
     DateTime now = DateTime.now();
-    String date = now.day.toString() + "." +now.month.toString() +"." + now.year.toString();
-    String outcome = "On the "+ date + ',\n' + findname.text;
-    outcome = "${"$outcome took the " + Allquiz().quizzes["quizzes"][widget.selected]["name"]} test and got the following result:\n";
+    String date = now.day.toString() +
+        "." +
+        now.month.toString() +
+        "." +
+        now.year.toString();
+    String outcome = "On the " + date + ',\n' + findname.text;
+    outcome =
+        "${"$outcome took the " + Allquiz().quizzes["quizzes"][widget.selected]["name"]} test and got the following result:\n";
     int i = 0;
     num score = 0;
 
-    for (var question in Allquiz().quizzes["quizzes"][widget.selected]["questions"]){
-      for (var option in question["choices"]){
-        if (_answers[i] == option["answer"]){
+    for (var question in Allquiz().quizzes["quizzes"][widget.selected]
+        ["questions"]) {
+      for (var option in question["choices"]) {
+        if (_answers[i] == option["answer"]) {
           score = score + option["points"];
         }
       }
       i++;
     }
 
-  for (var result in Allquiz().quizzes["quizzes"][widget.selected]["results"]){
-    if (score <= result["maxpoints"]){
-      outcome = outcome + result["text"];
-      break;
+    for (var result in Allquiz().quizzes["quizzes"][widget.selected]
+        ["results"]) {
+      if (score <= result["maxpoints"]) {
+        outcome = outcome + result["text"];
+        break;
+      }
     }
-  }
-  
-  String timr = "off.";
-  if (_settings.get("timerOn")){
-    timr = "on.";
-  }
-  outcome = "$outcome\nwith a time of ${_formatTime(_elapsedSeconds)}" + ", the timer was " + timr;
 
-  return outcome;
+    String timr = "off.";
+    if (_settings.get("timerOn")) {
+      timr = "on.";
+    }
+    outcome = "$outcome\nwith a time of ${_formatTime(_elapsedSeconds)}" +
+        ", the timer was " +
+        timr;
+
+    return outcome;
   }
 }
