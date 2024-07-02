@@ -10,7 +10,7 @@ class ReviewPage extends StatelessWidget{
   Widget build(BuildContext context){
 
     return Center(
-      child: Column(
+      child: ListView(
         children: [
           SizedBox(height: 20,),
           Text("Your results!",style: TextStyle(fontSize: 22),),

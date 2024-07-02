@@ -16,7 +16,10 @@ class _HistoryPagStateState extends State<HistoryPage> {
   int? _selectedIndex;
 
   void deleteAllHistory() {
-    _historyBox.deleteAll(_historyBox.values);
+    _historyBox.clear();
+    setState(() {
+      
+    });
   }
 
   @override
