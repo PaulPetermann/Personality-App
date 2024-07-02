@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:personality_app/view/pages/quiz_pages/personality_test_page.dart';
-import 'package:personality_app/view/pages/quiz_pages/finish_page.dart';
-import 'package:personality_app/model/create_quiz.dart';
-import 'package:personality_app/model/endquiz_handler.dart';
+import 'package:personify/model/create_quiz.dart';
+import 'package:personify/model/endquiz_handler.dart';
+import 'package:personify/view/pages/quiz_pages/finish_page.dart';
+import 'package:personify/view/pages/quiz_pages/personality_test_page.dart';
 import 'package:provider/provider.dart';
 
 class QuizSelecterPage extends StatefulWidget{

@@ -10,7 +10,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:personality_app/view/pages/history/history_page.dart';
+import 'package:personify/view/pages/history/history_page.dart';
 
 void main() {
   testWidgets("app bar should show up", (tester)async{

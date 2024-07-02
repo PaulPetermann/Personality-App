@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:personality_app/model/history_model.dart';
+import 'package:personify/model/history_model.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});

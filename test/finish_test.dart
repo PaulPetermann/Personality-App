@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:personality_app/view/pages/quiz_pages/finish_page.dart';
+import 'package:personify/view/pages/quiz_pages/finish_page.dart';
 
 String result = "this is a test";
 
